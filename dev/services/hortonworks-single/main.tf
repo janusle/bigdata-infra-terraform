@@ -20,6 +20,14 @@ resource "aws_security_group" "hortonworks-single-sg" {
     to_port = 22
     protocol = "tcp"
   }
+
+  egress {
+    cidr_blocks = ["0.0.0.0/0"]
+    from_port = 0
+    to_port = 0
+    protocol = "-1"
+
+  }
 }
 
 resource "aws_instance" "hortonworks-single" {
@@ -28,4 +36,12 @@ resource "aws_instance" "hortonworks-single" {
     subnet_id = "${var.subnet_id}"
     key_name = "${var.key_name}"
     security_groups = ["${aws_security_group.hortonworks-single-sg.id}"]
+}
+
+output "instance_ip" {
+  value = "${aws_instance.hortonworks-single.public_ip}"
+}
+
+output "instance_host" {
+  value = "${aws_instance.hortonworks-single.public_dns}"
 }
